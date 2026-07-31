@@ -22,8 +22,8 @@ def sign_in_process(auth: AuthLogin):
             name = "이말숙"
         )
     else:
-        raise HttpException(
-            state_code = 401,
+        raise HTTPException(
+            status_code = 401,
             detail = "아이디 또는 패스워드가 올바르지 않습니다."
         )
 
