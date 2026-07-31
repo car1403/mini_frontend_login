@@ -1,6 +1,7 @@
 """공통 로그인 상태와 인증 동작을 관리합니다."""
 
 import streamlit as st
+from core.api_client import BackendAPIError
 from clients.auth_client import login_process, logout_process
 
 def init_state(
@@ -14,13 +15,15 @@ def init_state(
 
 
 def login(login_id:str, login_pwd:str) -> None:
-    result = login_process(login_id, login_pwd)
-    if result is not None:
-        st.session_state.loginout = "login"
-        st.session_state.login_id = login_id
-        st.session_state.login_name = result["name"]
-        st.rerun()
-
+    try:
+        result = login_process(login_id, login_pwd)
+        if result is not None:
+            st.session_state.loginout = "login"
+            st.session_state.login_id = login_id
+            st.session_state.login_name = result["name"]
+            st.rerun()
+    except BackendAPIError as error:
+        st.error(str(error))
 
 def logout() -> None:
     result = logout_process(st.session_state.login_id)
